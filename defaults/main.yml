@@ -24,9 +24,9 @@ consul_architecture_map:
 consul_architecture: "{{ consul_architecture_map[ansible_architecture] }}"
 consul_os: "\
   {% if ansible_os_family == 'Windows' %}\
-    {{ 'windows' }}\
+  {{ 'windows' }}\
   {% else %}\
-    {{ ansible_system | lower }}\
+  {{ ansible_system | lower }}\
   {% endif %}"
 consul_pkg: consul{% if consul_enterprise %}-enterprise{% else %}{% endif %}_{{ consul_version }}_{{ consul_os }}_{{ consul_architecture }}.zip
 consul_zip_url: https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_{{ consul_os }}_{{ consul_architecture }}.zip
@@ -80,12 +80,12 @@ consul_alt_domain: "{{ lookup('env', 'CONSUL_ALT_DOMAIN') | default('', true) }}
 consul_node_meta: {}
 consul_iface: "\
   {% if ansible_os_family == 'Windows' %}\
-    {{ lookup('env', 'CONSUL_IFACE') | default(ansible_interfaces[0].interface_name, true) }}\
+  {{ lookup('env', 'CONSUL_IFACE') | default(ansible_interfaces[0].interface_name, true) }}\
   {% else %}\
-    {{ lookup('env', 'CONSUL_IFACE') | default(ansible_default_ipv4.interface, true) }}\
+  {{ lookup('env', 'CONSUL_IFACE') | default(ansible_default_ipv4.interface, true) }}\
   {% endif %}"
 consul_node_role: "{{ lookup('env', 'CONSUL_NODE_ROLE') | default('client', true) }}"
-consul_recursors: "{{ lookup('env', 'CONSUL_RECURSORS') | default('[]', true) }}"
+consul_recursors: "{{ lookup('env', 'CONSUL_RECURSORS') | default([], true) }}"
 consul_bootstrap_expect: "{{ lookup('env', 'CONSUL_BOOTSTRAP_EXPECT') | default(false, true) }}"
 consul_bootstrap_expect_value: "{{ _consul_lan_servercount | int }}"
 consul_ui: "{{ lookup('env', 'CONSUL_UI') | default(true, true) }}"
@@ -104,7 +104,7 @@ consul_env_vars:
 
 ### Autopilot
 consul_autopilot_enable: "{{ lookup('env', 'CONSUL_AUTOPILOT_ENABLE') | default(false, true) }}"
-consul_autopilot_cleanup_dead_Servers: "{{ lookup('env', 'CONSUL_AUTOPILOT_CLEANUP_DEAD_SERVERS') | default(false, true) }}"  # noqa var-naming[pattern]
+consul_autopilot_cleanup_dead_Servers: "{{ lookup('env', 'CONSUL_AUTOPILOT_CLEANUP_DEAD_SERVERS') | default(false, true) }}" # noqa var-naming[pattern]
 consul_autopilot_last_contact_threshold: "{{ lookup('env', 'CONSUL_AUTOPILOT_LAST_CONTACT_THRESHOLD') | default('200ms', true) }}"
 consul_autopilot_max_trailing_logs: "{{ lookup('env', 'CONSUL_AUTOPILOT_MAX_TRAILING_LOGS') | default(250, true) }}"
 consul_autopilot_server_stabilization_time: "{{ lookup('env', 'CONSUL_AUTOPILOT_SERVER_STABILIZATION_TIME') | default('10s', true) }}"
@@ -121,11 +121,11 @@ consul_cloud_autodiscovery_string: provider={{ consul_cloud_autodiscovery_provid
 ### Addresses
 consul_bind_address: "\
   {% if ansible_system == 'FreeBSD' or ansible_system == 'Darwin' %}\
-    {{ lookup('env', 'CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_' + consul_iface]['ipv4'][0]['address'], true) }}\
+  {{ lookup('env', 'CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_' + consul_iface]['ipv4'][0]['address'], true) }}\
   {% elif ansible_os_family == 'Windows' %}\
-    {{ lookup('env', 'CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_ip_addresses'][0], true) }}\
+  {{ lookup('env', 'CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_ip_addresses'][0], true) }}\
   {% else %}\
-    {{ lookup('env', 'CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_' + consul_iface | replace('-', '_')]['ipv4']['address'], true) }}\
+  {{ lookup('env', 'CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_' + consul_iface | replace('-', '_')]['ipv4']['address'], true) }}\
   {% endif %}"
 consul_advertise_address: "{{ consul_bind_address }}"
 consul_advertise_address_wan: "{{ consul_bind_address }}"
@@ -162,10 +162,10 @@ consul_join_wan: []
 consul_servers: "\
   {% set _consul_servers = [] %}\
   {% for host in groups[consul_group_name] %}\
-    {% set _consul_node_role = hostvars[host]['consul_node_role'] | default('client', true) %}\
-    {% if (_consul_node_role == 'server' or _consul_node_role == 'bootstrap') %}\
-      {% if _consul_servers.append(host) %}{% endif %}\
-    {% endif %}\
+  {% set _consul_node_role = hostvars[host]['consul_node_role'] | default('client', true) %}\
+  {% if (_consul_node_role == 'server' or _consul_node_role == 'bootstrap') %}\
+  {% if _consul_servers.append(host) %}{% endif %}\
+  {% endif %}\
   {% endfor %}\
   {{ _consul_servers }}"
 consul_gather_server_facts: false
@@ -222,9 +222,9 @@ consul_dnsmasq_bind_interfaces: false
 consul_dnsmasq_consul_address: "\
   {# Use localhost if DNS is listening on all interfaces #}\
   {% if consul_addresses.dns == '0.0.0.0' %}\
-    127.0.0.1\
+  127.0.0.1\
   {% else %}\
-    {{ consul_addresses.dns }}\
+  {{ consul_addresses.dns }}\
   {% endif %}"
 consul_dnsmasq_cache: -1
 consul_dnsmasq_servers:
