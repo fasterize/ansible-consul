@@ -2,7 +2,7 @@
 # File: dirs.yml - Consul directories
 
 - name: Create directories
-  when: ansible_os_family != 'Windows'
+  when: ansible_facts['os_family'] != 'Windows'
   block:
     - name: Configuration and data directories
       ansible.builtin.file:
@@ -34,7 +34,7 @@
     group: "{{ consul_group }}"
     mode: "0750"
   when:
-    - ansible_os_family != 'Windows'
+    - ansible_facts['os_family'] != 'Windows'
     - not consul_syslog_enable | bool
     - not consul_configure_syslogd | bool
 
@@ -50,7 +50,7 @@
   loop_control:
     loop_var: log_item
   when:
-    - ansible_os_family != 'Windows'
+    - ansible_facts['os_family'] != 'Windows'
     - consul_syslog_enable | bool
     - consul_configure_syslogd | bool
 
@@ -65,8 +65,8 @@
     # user. This may cause the role to fail on macOS systems where homebrew is not
     # present, but in that case, the user should create the directory from their playbook
     # before running this role.
-    - ansible_os_family != 'Darwin'
-    - ansible_os_family != 'Windows'
+    - ansible_facts['os_family'] != 'Darwin'
+    - ansible_facts['os_family'] != 'Windows'
     - not consul_install_from_repo | bool
 
 - name: Create directories on Windows
@@ -81,4 +81,4 @@
     - "{{ consul_bin_path }}"
   loop_control:
     loop_var: dir_item
-  when: ansible_os_family == 'Windows'
+  when: ansible_facts['os_family'] == 'Windows'

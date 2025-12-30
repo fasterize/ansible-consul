@@ -39,8 +39,8 @@
   ansible.builtin.include_vars: "{{ vars_file_item }}"
   with_first_found:
     - files:
-        - "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
-        - "{{ ansible_os_family }}.yml"
+        - "{{ ansible_facts['os_family'] }}-{{ ansible_facts['distribution_major_version'] }}.yml"
+        - "{{ ansible_facts['os_family'] }}.yml"
   loop_control:
     loop_var: vars_file_item
   tags: always
@@ -51,7 +51,7 @@
 - name: Include NIX tasks
   ansible.builtin.include_tasks:
     file: nix.yml
-  when: ansible_os_family != 'Windows'
+  when: ansible_facts['os_family'] != 'Windows'
 
 # -----------------------------------------------------------------------
 # Tasks for Windows
@@ -59,7 +59,7 @@
 - name: Include Windows tasks
   ansible.builtin.include_tasks:
     file: windows.yml
-  when: ansible_os_family == 'Windows'
+  when: ansible_facts['os_family'] == 'Windows'
 
 - name: Include services management
   ansible.builtin.import_tasks:

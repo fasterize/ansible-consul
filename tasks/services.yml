@@ -19,24 +19,24 @@
     paths: "{{ consul_configd_path }}"
     file_type: file
   register: services_enabled_unix
-  when: ansible_os_family != 'Windows'
+  when: ansible_facts['os_family'] != 'Windows'
 
 - name: Get the list of service config files [Windows]
   ansible.windows.win_find:
     paths: "{{ consul_configd_path }}"
     file_type: file
   register: services_enabled_windows
-  when: ansible_os_family == 'Windows'
+  when: ansible_facts['os_family'] == 'Windows'
 
 - name: Set var for enabled services
   ansible.builtin.set_fact:
     services_enabled_files: "{{ services_enabled_unix['files'] }}"
-  when: ansible_os_family != 'Windows'
+  when: ansible_facts['os_family'] != 'Windows'
 
 - name: Set var for enabled services [Windows]
   ansible.builtin.set_fact:
     services_enabled_files: "{{ services_enabled_windows['files'] }}"
-  when: ansible_os_family == 'Windows'
+  when: ansible_facts['os_family'] == 'Windows'
 
 - name: Set fact with list of existing configuration files
   ansible.builtin.set_fact:
@@ -51,7 +51,7 @@
   with_items: "{{ consul_services }}"
   loop_control:
     loop_var: service_item
-  when: ansible_os_family != 'Windows'
+  when: ansible_facts['os_family'] != 'Windows'
 
 - name: Find all service config files that we manage [Windows]
   ansible.windows.win_stat:
@@ -60,7 +60,7 @@
   loop_control:
     loop_var: service_config_item
   register: managed_files_win_paths
-  when: ansible_os_family == 'Windows'
+  when: ansible_facts['os_family'] == 'Windows'
 
 - name: Set fact with list of services we manage [Windows]
   ansible.builtin.set_fact:
@@ -68,14 +68,14 @@
   with_items: "{{ managed_files_win_paths.results }}"
   loop_control:
     loop_var: service_item
-  when: ansible_os_family == 'Windows'
+  when: ansible_facts['os_family'] == 'Windows'
 
 - name: Delete non declared services
   ansible.builtin.file:
     path: "{{ non_declared_service_item }}"
     state: absent
   when:
-    - ansible_os_family != 'Windows'
+    - ansible_facts['os_family'] != 'Windows'
     - non_declared_service_item not in managed_files
     - non_declared_service_item not in consul_cleanup_ignore_files
   with_items: "{{ list_current_service_config }}"
@@ -90,7 +90,7 @@
     path: "{{ non_declared_service_item }}"
     state: absent
   when:
-    - ansible_os_family == 'Windows'
+    - ansible_facts['os_family'] == 'Windows'
     - non_declared_service_item not in managed_files
     - non_declared_service_item not in consul_cleanup_ignore_files
   with_items: "{{ list_current_service_config }}"

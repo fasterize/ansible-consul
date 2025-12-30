@@ -21,12 +21,12 @@ consul_architecture_map:
   arm64: arm64
   32-bit: "386"
   64-bit: amd64
-consul_architecture: "{{ consul_architecture_map[ansible_architecture] }}"
+consul_architecture: "{{ consul_architecture_map[ansible_facts['architecture']] }}"
 consul_os: "\
-  {% if ansible_os_family == 'Windows' %}\
+  {% if ansible_facts['os_family'] == 'Windows' %}\
   {{ 'windows' }}\
   {% else %}\
-  {{ ansible_system | lower }}\
+  {{ ansible_facts['system'] | lower }}\
   {% endif %}"
 consul_pkg: consul{% if consul_enterprise %}-enterprise{% else %}{% endif %}_{{ consul_version }}_{{ consul_os }}_{{ consul_architecture }}.zip
 consul_zip_url: https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_{{ consul_os }}_{{ consul_architecture }}.zip
@@ -79,10 +79,10 @@ consul_domain: "{{ lookup('env', 'CONSUL_DOMAIN') | default('consul', true) }}"
 consul_alt_domain: "{{ lookup('env', 'CONSUL_ALT_DOMAIN') | default('', true) }}"
 consul_node_meta: {}
 consul_iface: "\
-  {% if ansible_os_family == 'Windows' %}\
-  {{ lookup('env', 'CONSUL_IFACE') | default(ansible_interfaces[0].interface_name, true) }}\
+  {% if ansible_facts['os_family'] == 'Windows' %}\
+  {{ lookup('env', 'CONSUL_IFACE') | default(ansible_facts['interfaces'][0].interface_name, true) }}\
   {% else %}\
-  {{ lookup('env', 'CONSUL_IFACE') | default(ansible_default_ipv4.interface, true) }}\
+  {{ lookup('env', 'CONSUL_IFACE') | default(ansible_facts['default_ipv4'].interface, true) }}\
   {% endif %}"
 consul_node_role: "{{ lookup('env', 'CONSUL_NODE_ROLE') | default('client', true) }}"
 consul_recursors: "{{ lookup('env', 'CONSUL_RECURSORS') | default([], true) }}"
@@ -120,9 +120,9 @@ consul_cloud_autodiscovery_string: provider={{ consul_cloud_autodiscovery_provid
 
 ### Addresses
 consul_bind_address: "\
-  {% if ansible_system == 'FreeBSD' or ansible_system == 'Darwin' %}\
+  {% if ansible_facts['system'] == 'FreeBSD' or ansible_facts['system'] == 'Darwin' %}\
   {{ lookup('env', 'CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_' + consul_iface]['ipv4'][0]['address'], true) }}\
-  {% elif ansible_os_family == 'Windows' %}\
+  {% elif ansible_facts['os_family'] == 'Windows' %}\
   {{ lookup('env', 'CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_ip_addresses'][0], true) }}\
   {% else %}\
   {{ lookup('env', 'CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_' + consul_iface | replace('-', '_')]['ipv4']['address'], true) }}\

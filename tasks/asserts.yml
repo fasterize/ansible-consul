@@ -23,51 +23,51 @@
 
 - name: Check distribution compatibility
   ansible.builtin.fail:
-    msg: "{{ ansible_distribution }} is not currently supported by this role."
+    msg: "{{ ansible_facts['distribution'] }} is not currently supported by this role."
   when:
-    - ansible_distribution not in _consul_nix_distros
-    - ansible_os_family != 'Windows'
+    - ansible_facts['distribution'] not in _consul_nix_distros
+    - ansible_facts['os_family'] != 'Windows'
 
 - name: Check Photon version
   ansible.builtin.fail:
-    msg: "{{ ansible_distribution_version }} is not a supported version."
+    msg: "{{ ansible_facts['distribution_version'] }} is not a supported version."
   when:
-    - ansible_distribution in ['VMware Photon OS']
-    - ansible_distribution_version is version_compare(4, '<')
+    - ansible_facts['distribution'] in ['VMware Photon OS']
+    - ansible_facts['distribution_version'] is version_compare(4, '<')
 
 - name: Check CentOS, Red Hat or Oracle Linux version
   ansible.builtin.fail:
-    msg: "{{ ansible_distribution_version }} is not a supported version."
+    msg: "{{ ansible_facts['distribution_version'] }} is not a supported version."
   when:
-    - ansible_distribution in ['RedHat', 'CentOS', 'OracleLinux', 'Rocky', 'AlmaLinux']
-    - ansible_distribution_version is version_compare(6, '<')
+    - ansible_facts['distribution'] in ['RedHat', 'CentOS', 'OracleLinux', 'Rocky', 'AlmaLinux']
+    - ansible_facts['distribution_version'] is version_compare(6, '<')
 
 - name: Check Debian version
   ansible.builtin.fail:
-    msg: "{{ ansible_distribution_version }} is not a supported version."
+    msg: "{{ ansible_facts['distribution_version'] }} is not a supported version."
   when:
-    - ansible_distribution == "Debian"
-    - (ansible_distribution_version != 'buster/sid') and (ansible_distribution_version is version_compare(8, '<'))
+    - ansible_facts['distribution'] == "Debian"
+    - (ansible_facts['distribution_version'] != 'buster/sid') and (ansible_facts['distribution_version'] is version_compare(8, '<'))
 
 - name: Check FreeBSD version
   ansible.builtin.fail:
-    msg: "{{ ansible_distribution_version }} is not a supported version."
+    msg: "{{ ansible_facts['distribution_version'] }} is not a supported version."
   when:
-    - ansible_distribution == "FreeBSD"
-    - ansible_distribution_version is version_compare(10, '<')
+    - ansible_facts['distribution'] == "FreeBSD"
+    - ansible_facts['distribution_version'] is version_compare(10, '<')
 
 - name: Check Ubuntu version
   ansible.builtin.fail:
-    msg: "{{ ansible_distribution_version }} is not a supported version."
+    msg: "{{ ansible_facts['distribution_version'] }} is not a supported version."
   when:
-    - ansible_distribution == "Ubuntu"
-    - ansible_distribution_version is version_compare(13.04, '<')
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] is version_compare(13.04, '<')
 
 - name: Check specified ethernet interface
   ansible.builtin.fail:
     msg: The ethernet interface specified by consul_iface was not found.
   when:
-    - ansible_os_family != 'Windows'
+    - ansible_facts['os_family'] != 'Windows'
     - consul_iface not in ansible_interfaces
 
 - name: Check iptables on Red Hat, CentOS or Oracle Linux

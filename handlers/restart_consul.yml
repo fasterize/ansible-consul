@@ -3,7 +3,7 @@
   ansible.builtin.systemd_service:
     daemon_reload: true
   become: true
-  when: ansible_service_mgr == "systemd"
+  when: ansible_facts['service_mgr'] == "systemd"
   listen: reload systemd daemon
 
 - name: Restart consul on Unix
@@ -12,11 +12,11 @@
     name: consul
     state: restarted
     # Needed to force SysV service manager on Docker for Molecule tests
-    use: "{{ ansible_service_mgr }}"
+    use: "{{ ansible_facts['service_mgr'] }}"
   when:
     - not consul_rolling_restart | bool
-    - ansible_os_family != "Darwin"
-    - ansible_os_family != "Windows"
+    - ansible_facts['os_family'] != "Darwin"
+    - ansible_facts['os_family'] != "Windows"
   listen: restart consul
 
 - name: Rolling restart consul on Unix
@@ -28,13 +28,13 @@
   when:
     - consul_rolling_restart | bool
     - inventory_hostname == ansible_play_batch[0]
-    - ansible_os_family != "Darwin"
-    - ansible_os_family != "Windows"
+    - ansible_facts['os_family'] != "Darwin"
+    - ansible_facts['os_family'] != "Windows"
   listen: restart consul
 
 - name: Restart consul on Mac
   ansible.builtin.include_tasks: "{{ role_path }}/handlers/restart_consul_mac.yml"
-  when: ansible_os_family == "Darwin"
+  when: ansible_facts['os_family'] == "Darwin"
   listen: restart consul
 
 - name: Restart consul on Windows
@@ -45,7 +45,7 @@
   # property is evaluated before the `when` condition and this results in an Ansible
   # error.
   become: false
-  when: ansible_os_family == "Windows"
+  when: ansible_facts['os_family'] == "Windows"
   register: windows_service_started
   retries: 3
   delay: 1
