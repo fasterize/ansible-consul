@@ -121,11 +121,11 @@ consul_cloud_autodiscovery_string: provider={{ consul_cloud_autodiscovery_provid
 ### Addresses
 consul_bind_address: "\
   {% if ansible_facts['system'] == 'FreeBSD' or ansible_facts['system'] == 'Darwin' %}\
-  {{ lookup('env', 'CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_' + consul_iface]['ipv4'][0]['address'], true) }}\
+  {{ lookup('env', 'CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_facts'][consul_iface]['ipv4'][0]['address'], true) }}\
   {% elif ansible_facts['os_family'] == 'Windows' %}\
-  {{ lookup('env', 'CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_ip_addresses'][0], true) }}\
+  {{ lookup('env', 'CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_facts']['ip_addresses'][0], true) }}\
   {% else %}\
-  {{ lookup('env', 'CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_' + consul_iface | replace('-', '_')]['ipv4']['address'], true) }}\
+  {{ lookup('env', 'CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_facts'][consul_iface | replace('-', '_')]['ipv4']['address'], true) }}\
   {% endif %}"
 consul_advertise_address: "{{ consul_bind_address }}"
 consul_advertise_address_wan: "{{ consul_bind_address }}"
