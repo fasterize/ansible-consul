@@ -60,7 +60,6 @@
         ansible_facts['distribution']|lower == 'rocky' or
         ansible_facts['distribution']|lower == 'almalinux'
 
-
     - name: Add an Apt signing key, uses whichever key is at the URL
       ansible.builtin.apt_key:
         url: "{{ consul_repo_url }}/gpg"

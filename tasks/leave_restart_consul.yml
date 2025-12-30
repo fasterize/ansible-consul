@@ -1,5 +1,4 @@
 ---
-
 - name: Check if consul is running
   delegate_to: "{{ rolling_restart_host }}"
   ansible.builtin.stat:

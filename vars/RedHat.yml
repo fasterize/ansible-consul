@@ -3,13 +3,13 @@
 
 consul_os_packages:
   - "{% if (ansible_facts['distribution'] == 'Fedora' and ansible_facts['distribution_version'] is version('28', '<')) or \
-      (ansible_facts['distribution'] == 'CentOS' and ansible_facts['distribution_version'] is version('8', '<')) or \
-      (ansible_facts['distribution'] == 'Amazon' and ansible_facts['distribution_version'] is version('3', '<')) or \
-      (ansible_facts['distribution'] == 'OracleLinux' and ansible_facts['distribution_version'] is version('8', '<')) \
+    (ansible_facts['distribution'] == 'CentOS' and ansible_facts['distribution_version'] is version('8', '<')) or \
+    (ansible_facts['distribution'] == 'Amazon' and ansible_facts['distribution_version'] is version('3', '<')) or \
+    (ansible_facts['distribution'] == 'OracleLinux' and ansible_facts['distribution_version'] is version('8', '<')) \
     %}\
-      libselinux-python\
+    libselinux-python\
     {% else %}\
-      python3-libselinux\
+    python3-libselinux\
     {% endif %}"
   - unzip
 
@@ -17,9 +17,9 @@ consul_repo_prerequisites:
   - yum-utils
 
 consul_repo_url: "{% if (ansible_facts['distribution'] == 'Fedora') %}\
-      https://rpm.releases.hashicorp.com/fedora/hashicorp.repo\
-    {% else %}\
-      https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo\
-    {% endif %}"
+  https://rpm.releases.hashicorp.com/fedora/hashicorp.repo\
+  {% else %}\
+  https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo\
+  {% endif %}"
 
 dnsmasq_package: dnsmasq
